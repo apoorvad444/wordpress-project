@@ -1,19 +1,19 @@
-# FILE: .github/workflows/deploy.yml
-name: 🚀 Automated WordPress Deployment
+
+name:  Automated WordPress Deployment
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: 📦 Checkout Code
+    - name:  Checkout Code
       uses: actions/checkout@v2
 
-    - name: ⚙️ Update Application Configuration
+    - name:  Update Application Configuration
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST_IP }}
