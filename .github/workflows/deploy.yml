@@ -1,0 +1,31 @@
+# FILE: .github/workflows/deploy.yml
+name: 🚀 Automated WordPress Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📦 Checkout Code
+      uses: actions/checkout@v2
+
+    - name: ⚙️ Update Application Configuration
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_IP }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # 1. Point to the K3s config file
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          
+          # 2. Upgrade the deployment and change the Site Title 
+          # This proves the CI/CD works by updating a Helm value!
+          helm upgrade my-wordpress bitnami/wordpress \
+            --set service.type=NodePort \
+            --set service.nodePorts.http=30080 \
+            --set wordpressBlogName="Automated CI/CD Test - Build ${{ github.run_number }}"
